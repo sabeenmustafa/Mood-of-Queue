@@ -13,6 +13,8 @@ st_autorefresh(interval=30000, key="refresh")
 # ---------------- Google Sheets Setup ---------------- #
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gcp_credentials = dict(st.secrets["gcp_service_account"])
+# Fix the private key by replacing literal `\\n` with real newlines
+gcp_credentials["private_key"] = gcp_credentials["private_key"].replace("\\n", "\n")
 creds = ServiceAccountCredentials.from_json_keyfile_dict(gcp_credentials, scope)
 client = gspread.authorize(creds)
 sheet = client.open("Mood Tracker").sheet1
