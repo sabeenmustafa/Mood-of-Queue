@@ -5,13 +5,16 @@ import plotly.express as px
 from datetime import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 
 # 🔄 Auto-refresh every 30 seconds
 st_autorefresh(interval=30000, key="refresh")
 
 # ---------------- Google Sheets Setup ---------------- #
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+gcp_credentials = st.secrets["gcp_service_account"]
+gcp_json = json.loads(json.dumps(gcp_credentials))
+creds = ServiceAccountCredentials.from_json_keyfile_dict(gcp_json, scope)
 client = gspread.authorize(creds)
 sheet = client.open("Mood Tracker").sheet1
 
